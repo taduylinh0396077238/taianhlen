@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .div1{
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+        }
+        canvas{
+            margin-top: 20px;
+        }
+        body{
+            background-color: rgb(201, 201, 201);
+            display: flex;
+            flex-direction: column;
+        }
+        input{
+            margin-bottom: 20px;
+            height: 40px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body ng-app="myApp" ng-controller="myController">
+    <div>
+        <canvas id="canvas"></canvas>
+    </div>
+    <div class="div1">
+        <input type="file" id="uploader"  multiple/>
+        <input type="text" placeholder="Tên giày" id='name'>
+        <input type="text" placeholder="Size" id='size'>
+        <input type="text" placeholder="Tình Trạng" id='tt'>
+        <input type="text" placeholder="Giá" id='price'>
+        <button>Download</button>
+    </div>
+
+ <script>
+    const input = document.querySelectorAll('input')
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 600;
+
+
+    const reader = new FileReader();
+    const img = new Image();
+
+    const uploadImage = (e) => {
+    reader.onload = () => {
+        img.onload = (e) => {
+            const bn = e.target
+            canvas.height = bn.height*600 / bn.width + 200;
+            ctx.fillStyle ="#fff";
+            ctx.fillRect(0,0,600,bn.height*600 / bn.width + 200);
+            ctx.drawImage(bn, 5,5,590,bn.height*590/bn.width);
+
+        ctx.font = "24px Times New Roman";
+        ctx.fillStyle = 'black';
+
+        ctx.fillText('💢 Jordan', 10, bn.height*590/bn.width + 60);
+        ctx.fillText('💢 Size: 42', 10, bn.height*590/bn.width + 100);
+        ctx.fillText('💢 Tình trạng : New', 10, bn.height*590/bn.width + 140);
+        ctx.fillText('🏧 Price:️ 1,000,000 đ', 10, bn.height*590/bn.width + 180);
+
+        for (const item of input) {
+            item.addEventListener('keyup',function(){
+                ctx.fillStyle ="#fff";
+                ctx.fillRect(0,0,600,bn.height*600 / bn.width + 200);
+                ctx.drawImage(bn, 5,5,590,bn.height*590/bn.width);
+
+                let name = document.getElementById('name').value
+                let size =  document.getElementById('size').value
+                let tt =  document.getElementById('tt').value
+                let price = document.getElementById('price').value
+                ctx.fillStyle = 'black'
+                ctx.fillText('💢 ' + name, 10, bn.height*590/bn.width + 60);
+                ctx.fillText('💢  Size: '+ size, 10, bn.height*590/bn.width + 100);
+                ctx.fillText('💢  Tình trạng : ' + tt, 10, bn.height*590/bn.width + 140);
+                ctx.fillText('🏧 Price:️ ' + price , 10, bn.height*590/bn.width + 180);
+            })
+        }
+
+        };
+        img.src = reader.result;
+    };
+    reader.readAsDataURL(e.target.files[0]);
+
+    };
+
+    const imageLoader = document.getElementById("uploader");
+    imageLoader.addEventListener("change", uploadImage);
+
+
+    function download() {
+    const image = canvas.toDataURL();
+    const link = document.createElement("a");
+    link.href = image;
+    link.download = "image.png";
+    link.click();
+    }
+    document.querySelector("button").addEventListener("click", download);
+ </script>
+
+</body>
+</html>
